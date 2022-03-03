@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "mottai-app-dev"
+    "dev": "mottai-app-dev",
+    "prod": "mottai-app-prod"
   }
 }

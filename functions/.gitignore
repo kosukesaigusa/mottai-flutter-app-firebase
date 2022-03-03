@@ -9,4 +9,5 @@ typings/
 node_modules/
 
 # keys
+keys/
 lib/keys

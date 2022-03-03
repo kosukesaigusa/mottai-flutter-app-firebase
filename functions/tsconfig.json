@@ -1,15 +1,21 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
-    "target": "es2017"
+    "target": "es2020",
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    },
+    "types": ["@types/node"]
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "lib"]
 }

@@ -11,7 +11,7 @@ export const onCreateTestNotificationRequest = functions
         const data = snapshot.data()
         const token = data.token
         const title = 'テスト通知'
-        const body = 'これはテスト通知です。タップするとアカウントページに遷移します。'
+        const body = 'これはテスト通知です。タップすると現在のタブ上でアカウントページに遷移します。'
         const path = '/account/'
         await sendFCMByToken(token, title, body, path)
         functions.logger.log('👌 Test Notification succeeded.')

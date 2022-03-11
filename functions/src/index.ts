@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin'
 import * as serviceAccountKey from '../keys/service_account_key.json'
+import { createFirebaseAuthCustomToken } from './callable-functions/custom-token/createFirebaseAuthCustomToken'
 import { onCreateTestNotificationRequest } from './firebase-functions/test-functions/onCreateTestNotificationRequest'
 
 // サービスアカウントを環境変数から取得
@@ -24,5 +25,6 @@ admin.initializeApp({
 })
 
 export {
-    onCreateTestNotificationRequest
+    onCreateTestNotificationRequest,
+    createFirebaseAuthCustomToken
 }

@@ -8,7 +8,7 @@ const serviceAccount = {
     type: serviceAccountKey.type,
     projectId: serviceAccountKey.project_id,
     privateKeyId: serviceAccountKey.private_key_id,
-    privateKey: serviceAccountKey.private_key.replace(/\\n/g, '\n'),
+    privateKey: serviceAccountKey.private_key.replace(/\\n/g, `\n`),
     clientEmail: serviceAccountKey.client_email,
     clientId: serviceAccountKey.client_id,
     authUri: serviceAccountKey.auth_uri,

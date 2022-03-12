@@ -38,24 +38,24 @@ export const sendFCMByTargets = async function f(
                     title: title,
                     body: body,
                     path: path,
-                    click_action: 'FLUTTER_NOTIFICATION_CLICK',
-                    id: '1',
-                    status: 'done'
+                    click_action: `FLUTTER_NOTIFICATION_CLICK`,
+                    id: `1`,
+                    status: `done`
                 },
                 apns: {
-                    headers: { 'apns-priority': '10' },
+                    headers: { 'apns-priority': `10` },
                     payload: {
                         aps: {
                             contentAvailable: true,
                             badge: fcmTarget.badgeNumber,
-                            sound: 'default'
+                            sound: `default`
                         }
                     }
                 },
                 android: {
-                    priority: 'high',
+                    priority: `high`,
                     notification: {
-                        priority: 'max',
+                        priority: `max`,
                         defaultSound: true,
                         notificationCount: 1 // 増加数
                     }
@@ -74,7 +74,7 @@ export const sendFCMByTargets = async function f(
                 )
                 return
             }
-            console.log('指定した全員に通知送信が成功した')
+            console.log(`指定した全員に通知送信が成功した`)
         }
     }
 }

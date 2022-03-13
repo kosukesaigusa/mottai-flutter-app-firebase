@@ -13,10 +13,11 @@ export const createFirebaseAuthCustomToken = functions
     .region(`asia-northeast1`)
     .https.onCall(async (data) => {
         const accessToken = data.accessToken as string
+        const firebaseAuthUserId: string | null = data.firebaseAuthUserId ?? null
         try {
             const promises = await Promise.all([
                 verifyAccessToken({ accessToken }),
-                createCustomToken({ accessToken })
+                createCustomToken({ accessToken, firebaseAuthUserId })
             ])
             return {
                 channelId: promises[0].channelId,

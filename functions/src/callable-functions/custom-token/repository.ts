@@ -77,8 +77,7 @@ export const createCustomToken = async ({
 ): Promise<string> => {
     try {
         const response = await axios.get<LINEGetProfileResponse>(
-            `https://api.line.me/v2/profile`,
-            {
+            `https://api.line.me/v2/profile`, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             }
         )
@@ -87,8 +86,6 @@ export const createCustomToken = async ({
         }
         let userId = response.data.userId
 
-        // TODO: 本当はユーザー ID ではなく、LINE のメールアドレスを取得して、
-        // TODO: それと一致するかどうかを調べるようにしたい
         // firebaseAuthUserId が指定されている場合は、そのユーザーの存在確認をして
         // 見つかれば、Custom Token へ入力するユーザー ID を上書きする。
         if (firebaseAuthUserId !== null) {

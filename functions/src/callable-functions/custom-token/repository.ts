@@ -1,16 +1,17 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
-import axios from "axios"
+import axios from 'axios'
+import * as url from 'url'
 
 /**
- * LINE の Verify API を実行してチャンネル ID と有効期限を返す。
+ * LINE の GET Verify API を実行してチャンネル ID と有効期限を返す。
  * @param {string} accessToken - アクセストークン
  */
-export const verifyAccessToken = async (
+export const getVerifyAPI = async (
     { accessToken }: {accessToken: string}
 ): Promise<{channelId: string, expiresIn: number}> => {
     try {
-        const response = await axios.get<LINEVerifyAPIResponse>(
+        const response = await axios.get<LINEGetVerifyAPIResponse>(
             `https://api.line.me/oauth2/v2.1/verify?access_token=${accessToken}`
         )
         if (response.status !== 200) {
@@ -22,6 +23,40 @@ export const verifyAccessToken = async (
         }
     } catch (e) {
         throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
+    }
+}
+
+/**
+ * LINE の POST Verify API を実行して...
+ * @param {string} accessToken - アクセストークン
+ */
+export const postVerifyAPI = async (
+    { idToken }: {idToken: string}
+): Promise<{firebaseAuthUserId: string | null}> => {
+    const params = new url.URLSearchParams({
+        id_token: idToken,
+        client_id: `1656968545` // TODO: 後で修正する
+    })
+    try {
+        const response = await axios.post<LINEPostVerifyAPIResponse>(
+            `https://api.line.me/oauth2/v2.1/verify/`,
+            params.toString(), {
+                headers: { 'content-type': `application/x-www-form-urlencoded` }
+            }
+        )
+        if (response.status !== 200) {
+            throw new Error(`[${response.status}]: GET /oauth2/v2.1/verify`)
+        }
+        const email = response.data.email
+        try {
+            const userRecord = await admin.auth().getUserByEmail(email)
+            return { firebaseAuthUserId: userRecord.uid }
+        } catch (e) {
+            return { firebaseAuthUserId: null }
+        }
+    } catch (e) {
+        functions.logger.log(e)
+        throw new Error(`⚠️ LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }
 
@@ -39,7 +74,7 @@ export const verifyAccessToken = async (
 export const createCustomToken = async ({
     accessToken, firebaseAuthUserId
 }:{ accessToken: string, firebaseAuthUserId: string | null }
-): Promise<{customToken: string}> => {
+): Promise<string> => {
     try {
         const response = await axios.get<LINEGetProfileResponse>(
             `https://api.line.me/v2/profile`,
@@ -65,7 +100,7 @@ export const createCustomToken = async ({
             }
         }
         const customToken = await admin.auth().createCustomToken(userId)
-        return { customToken }
+        return customToken
     } catch (e) {
         throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
     }

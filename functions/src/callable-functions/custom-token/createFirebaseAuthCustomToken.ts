@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions'
-import { createCustomToken, verifyAccessToken } from './repository'
+import { createCustomToken, getVerifyAPI, postVerifyAPI } from './repository'
 
 /**
  * LINE ログイン用の Firebase Auth のカスタムトークン認証のための Callable Function。
@@ -13,17 +13,17 @@ export const createFirebaseAuthCustomToken = functions
     .region(`asia-northeast1`)
     .https.onCall(async (data) => {
         const accessToken = data.accessToken as string
-        const firebaseAuthUserId: string | null = data.firebaseAuthUserId ?? null
+        const idToken = data.idToken as string
         try {
             const promises = await Promise.all([
-                verifyAccessToken({ accessToken }),
-                createCustomToken({ accessToken, firebaseAuthUserId })
+                getVerifyAPI({ accessToken }),
+                postVerifyAPI({ idToken })
             ])
-            return {
-                channelId: promises[0].channelId,
-                expiresIn: promises[0].expiresIn,
-                customToken: promises[1].customToken
-            }
+            const channelId = promises[0].channelId
+            const expiresIn = promises[0].expiresIn
+            const firebaseAuthUserId = promises[1].firebaseAuthUserId
+            const customToken = await createCustomToken({ accessToken, firebaseAuthUserId })
+            return { channelId, expiresIn, customToken }
         } catch (e) {
             if (e instanceof Error) {
                 functions.logger.log(e.message)

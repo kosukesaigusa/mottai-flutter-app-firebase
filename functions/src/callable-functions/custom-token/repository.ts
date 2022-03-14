@@ -84,18 +84,10 @@ export const createCustomToken = async ({
         if (response.status !== 200) {
             throw new Error(`[${response.status}]: GET /v2/profile`)
         }
-        let userId = response.data.userId
-
-        // firebaseAuthUserId が指定されている場合は、そのユーザーの存在確認をして
-        // 見つかれば、Custom Token へ入力するユーザー ID を上書きする。
-        if (firebaseAuthUserId !== null) {
-            try {
-                const userRecord = await admin.auth().getUser(firebaseAuthUserId)
-                userId = userRecord.uid
-            } catch {
-                functions.logger.log(`⚠️ 対応するユーザーが見つかりませんでした。`)
-            }
-        }
+        // firebaseAuthUserId が null でない場合は LINE の POST verify API
+        // を叩いた流れで得られたものなので Custom Token へ入力するユーザー ID として使用する。
+        // null の場合は LINE のユーザー ID を使用する。
+        const userId = firebaseAuthUserId ?? response.data.userId
         const customToken = await admin.auth().createCustomToken(userId)
         return customToken
     } catch (e) {

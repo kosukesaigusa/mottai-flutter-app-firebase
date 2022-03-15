@@ -1,3 +1,4 @@
+import * as functions from 'firebase-functions'
 import { messaging } from 'firebase-admin'
 
 /**
@@ -69,12 +70,10 @@ export const sendFCMByTargets = async function f(
                         failedTokens.push(twoDimensionTokens[i][j])
                     }
                 })
-                console.warn(
-                    `送信に失敗した FCM Token（${response.failureCount}個）: ${failedTokens}`
-                )
+                functions.logger.warn(`⚠️ 送信に失敗した FCM Token（${response.failureCount}個）: ${failedTokens}`)
                 return
             }
-            console.log(`指定した全員に通知送信が成功した`)
+            functions.logger.log(`🎉 指定した全員に通知送信が成功しました`)
         }
     }
 }

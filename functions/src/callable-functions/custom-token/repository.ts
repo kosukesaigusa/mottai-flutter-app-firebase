@@ -32,7 +32,7 @@ export const getVerifyAPI = async (
  */
 export const postVerifyAPI = async (
     { idToken }: {idToken: string}
-): Promise<{firebaseAuthUserId: string | null}> => {
+): Promise<{email: string}> => {
     const params = new url.URLSearchParams({
         id_token: idToken,
         client_id: `1656968545` // TODO: 後で修正する
@@ -48,15 +48,60 @@ export const postVerifyAPI = async (
             throw new Error(`[${response.status}]: GET /oauth2/v2.1/verify`)
         }
         const email = response.data.email
-        try {
-            const userRecord = await admin.auth().getUserByEmail(email)
-            return { firebaseAuthUserId: userRecord.uid }
-        } catch (e) {
-            return { firebaseAuthUserId: null }
-        }
+        return { email }
     } catch (e) {
         functions.logger.log(e)
         throw new Error(`⚠️ LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
+    }
+}
+
+/**
+ *
+ * @param email
+ * @returns
+ */
+export const getLINEProfile = async (
+    accessToken: string
+): Promise<{userId: string, displayName: string, pictureUrl: string | null}> => {
+    try {
+        const response = await axios.get<LINEGetProfileResponse>(
+            `https://api.line.me/v2/profile`, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            }
+        )
+        if (response.status !== 200) {
+            throw new Error(`[${response.status}]: GET /v2/profile`)
+        }
+        return {
+            userId: response.data.userId,
+            displayName: response.data.displayName,
+            pictureUrl: response.data.pictureUrl ?? null
+        }
+    } catch (e) {
+        throw new Error(`⚠️ LINE の GET /v2/profile で失敗しました。${e}`)
+    }
+}
+
+
+/**
+ *
+ * @param {string} email - メールアドレス
+ * @returns
+ */
+export const getOrCreateFirebaseAuthUser = async (
+    { uid, email }:{ uid: string, email: string}
+): Promise<admin.auth.UserRecord> => {
+    try {
+        const userRecord = await admin.auth().getUserByEmail(email)
+        functions.logger.log(
+            `ログインに使用された LINE アカウント同じ Email の Firebase Auth ユーザーが見つかりました。
+            (userId, email): (${userRecord.uid}, ${email})`
+        )
+        return userRecord
+    } catch (e) {
+        functions.logger.log(`新しく LINE アカウントの User ID でユーザーを作成します。`)
+        const userRecord = await admin.auth().createUser({ uid, email })
+        return userRecord
     }
 }
 
@@ -71,23 +116,11 @@ export const postVerifyAPI = async (
  * @param {string} accessToken - アクセストークン
  * @param {string | null} firebaseAuthUserId - Firebase Auth のユーザー ID
  */
-export const createCustomToken = async ({
-    accessToken, firebaseAuthUserId
-}:{ accessToken: string, firebaseAuthUserId: string | null }
-): Promise<string> => {
+export const createCustomToken = async (userId: string): Promise<string> => {
     try {
-        const response = await axios.get<LINEGetProfileResponse>(
-            `https://api.line.me/v2/profile`, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            }
-        )
-        if (response.status !== 200) {
-            throw new Error(`[${response.status}]: GET /v2/profile`)
-        }
         // firebaseAuthUserId が null でない場合は LINE の POST verify API
         // を叩いた流れで得られたものなので Custom Token へ入力するユーザー ID として使用する。
         // null の場合は LINE のユーザー ID を使用する。
-        const userId = firebaseAuthUserId ?? response.data.userId
         const customToken = await admin.auth().createCustomToken(userId)
         return customToken
     } catch (e) {

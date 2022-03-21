@@ -8,6 +8,8 @@ typings/
 # Node.js dependency directory
 node_modules/
 
-# keys
+# keys and settings
 keys/
 lib/keys
+settings/
+lib/settings

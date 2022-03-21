@@ -2,6 +2,7 @@ import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 import axios from 'axios'
 import * as url from 'url'
+import * as settings from '../../../settings/settings.json'
 
 /**
  * LINE の GET Verify API を実行してチャンネル ID と有効期限を返す。
@@ -35,7 +36,7 @@ export const postVerifyAPI = async (
 ): Promise<{email: string}> => {
     const params = new url.URLSearchParams({
         id_token: idToken,
-        client_id: `1656968545` // TODO: 後で修正する
+        client_id: settings.line_channel_id
     })
     try {
         const response = await axios.post<LINEPostVerifyAPIResponse>(

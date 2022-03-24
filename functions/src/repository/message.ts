@@ -13,44 +13,44 @@ export class MessageRepository {
   static readonly userSubCollectionName = `users`;
   static readonly messageSubCollectionName = `messages`;
 
-  static readonly baseRef = admin.firestore().collection(this.domainCollectionName).doc(this.domainDocumentName)
+  static readonly baseRef = admin.firestore().collection(MessageRepository.domainCollectionName).doc(MessageRepository.domainDocumentName)
 
   static attendingRoomsRef(
       { userId }: { userId: string }
   ): CollectionReference<AttendingRoom> {
-      return this.baseRef
-          .collection(this.userSubCollectionName)
+      return MessageRepository.baseRef
+          .collection(MessageRepository.userSubCollectionName)
           .doc(userId)
-          .collection(this.attendingRoomSubCollectionName)
+          .collection(MessageRepository.attendingRoomSubCollectionName)
           .withConverter<AttendingRoom>(attendingRoomConverter)
   }
 
   static attendingRoomRef(
       { userId, roomId }: {userId: string, roomId: string}
   ): DocumentReference<AttendingRoom> {
-      return this.attendingRoomsRef({ userId: userId }).doc(roomId)
+      return MessageRepository.attendingRoomsRef({ userId: userId }).doc(roomId)
   }
 
   static readonly roomsRef: CollectionReference<AttendingRoom> =
-      this.baseRef
-          .collection(this.roomSubCollectionName)
+      MessageRepository.baseRef
+          .collection(MessageRepository.roomSubCollectionName)
           .withConverter<AttendingRoom>(roomConverter)
 
   static roomRef(
       { roomId }: {roomId: string}
   ): DocumentReference<AttendingRoom> {
-      return this.roomsRef.doc(roomId)
+      return MessageRepository.roomsRef.doc(roomId)
   }
 
   static readonly messagesRef: CollectionReference<Message> =
-      this.baseRef
-          .collection(this.roomSubCollectionName)
+      MessageRepository.baseRef
+          .collection(MessageRepository.roomSubCollectionName)
           .withConverter<Message>(messageConverter)
 
   static messageRef(
       { messageId }: {messageId: string}
   ): DocumentReference<Message> {
-      return this.messagesRef.doc(messageId)
+      return MessageRepository.messagesRef.doc(messageId)
   }
 
   /** AttendingRoom 一覧を取得する。 */
@@ -63,7 +63,7 @@ export class MessageRepository {
     queryBuilder?: (query: Query<AttendingRoom>) => Query<AttendingRoom>,
     compare?: (lhs: AttendingRoom, rhs: AttendingRoom) => number,
   }): Promise<AttendingRoom[]> {
-      let query: Query<AttendingRoom> = this.attendingRoomsRef({ userId: userId })
+      let query: Query<AttendingRoom> = MessageRepository.attendingRoomsRef({ userId: userId })
       if (queryBuilder !== undefined) {
           query = queryBuilder(query)
       }
@@ -79,7 +79,7 @@ export class MessageRepository {
   static async fetchAttendingRoom(
       { userId, roomId }: {userId: string, roomId: string}
   ): Promise<AttendingRoom | undefined> {
-      const ds = await this.attendingRoomRef({ userId: userId, roomId: roomId }).get()
+      const ds = await MessageRepository.attendingRoomRef({ userId: userId, roomId: roomId }).get()
       return ds.data()
   }
 
@@ -89,7 +89,7 @@ export class MessageRepository {
   }: {
     queryBuilder?: (query: Query<Room>) => Query<Room>,
     compare?: (lhs: Room, rhs: Room) => number,}): Promise<Room[]> {
-      let query: Query<Room> = this.roomsRef
+      let query: Query<Room> = MessageRepository.roomsRef
       if (queryBuilder !== undefined) {
           query = queryBuilder(query)
       }
@@ -103,7 +103,7 @@ export class MessageRepository {
 
   /** 指定した Room を取得する。 */
   static async fetchRoom({ roomId }: {roomId: string}): Promise<Room | undefined> {
-      const ds = await this.roomRef({ roomId: roomId }).get()
+      const ds = await MessageRepository.roomRef({ roomId: roomId }).get()
       return ds.data()
   }
 
@@ -114,7 +114,7 @@ export class MessageRepository {
     queryBuilder?: (query: Query<Message>) => Query<Message>,
     compare?: (lhs: Message, rhs: Message) => number,
     }): Promise<Message[]> {
-      let query: Query<Message> = this.messagesRef
+      let query: Query<Message> = MessageRepository.messagesRef
       if (queryBuilder !== undefined) {
           query = queryBuilder(query)
       }
@@ -128,7 +128,7 @@ export class MessageRepository {
 
   /** 指定した Message を取得する。 */
   static async fetchMessage({ messageId }: { messageId: string }): Promise<Message | undefined> {
-      const ds = await this.messageRef({ messageId: messageId }).get()
+      const ds = await MessageRepository.messageRef({ messageId: messageId }).get()
       return ds.data()
   }
 }

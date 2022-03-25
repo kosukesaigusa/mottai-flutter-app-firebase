@@ -28,17 +28,17 @@ export const onCreateMessage = functions
 
         // バッチ書き込みする
         const batch = admin.firestore().batch()
-        if (hostAttendingRoom !== undefined && workerAttendingRoom !== undefined) {
+        if (hostAttendingRoom.exists && workerAttendingRoom.exists) {
             return
         }
-        if (hostAttendingRoom === undefined) {
+        if (!hostAttendingRoom.exists) {
             const partnerId = workerId
             batch.set(
                 hostAttendingRoomRef,
                 attendingRoomConverter.toFirestore({ roomId, partnerId }),
             )
         }
-        if (workerAttendingRoom === undefined) {
+        if (!workerAttendingRoom.exists) {
             const partnerId = hostId
             batch.set(
                 workerAttendingRoomRef,
@@ -49,6 +49,6 @@ export const onCreateMessage = functions
             await batch.commit()
             functions.logger.info(`🎉 onCreateMessage に成功しました`)
         } catch (e) {
-            functions.logger.error(`onCreateMessage のバッチ書き込みに失敗しました：${e}`)
+            functions.logger.error(`⚠️ onCreateMessage のバッチ書き込みに失敗しました：${e}`)
         }
     })

@@ -13,7 +13,9 @@ export class MessageRepository {
   static readonly userSubCollectionName = `users`;
   static readonly messageSubCollectionName = `messages`;
 
-  static readonly baseRef = admin.firestore().collection(MessageRepository.domainCollectionName).doc(MessageRepository.domainDocumentName)
+  static readonly baseRef = admin.firestore()
+      .collection(MessageRepository.domainCollectionName)
+      .doc(MessageRepository.domainDocumentName)
 
   static attendingRoomsRef(
       { userId }: { userId: string }
@@ -26,19 +28,17 @@ export class MessageRepository {
   }
 
   static attendingRoomRef(
-      { userId, roomId }: {userId: string, roomId: string}
+      { userId, roomId }: { userId: string, roomId: string }
   ): DocumentReference<AttendingRoom> {
       return MessageRepository.attendingRoomsRef({ userId: userId }).doc(roomId)
   }
 
-  static readonly roomsRef: CollectionReference<AttendingRoom> =
+  static readonly roomsRef: CollectionReference<Room> =
       MessageRepository.baseRef
           .collection(MessageRepository.roomSubCollectionName)
-          .withConverter<AttendingRoom>(roomConverter)
+          .withConverter<Room>(roomConverter)
 
-  static roomRef(
-      { roomId }: {roomId: string}
-  ): DocumentReference<AttendingRoom> {
+  static roomRef({ roomId }: { roomId: string }): DocumentReference<Room> {
       return MessageRepository.roomsRef.doc(roomId)
   }
 
@@ -48,7 +48,7 @@ export class MessageRepository {
           .withConverter<Message>(messageConverter)
 
   static messageRef(
-      { messageId }: {messageId: string}
+      { messageId }: { messageId: string }
   ): DocumentReference<Message> {
       return MessageRepository.messagesRef.doc(messageId)
   }
@@ -77,7 +77,7 @@ export class MessageRepository {
 
   /** 指定した AttendingRoom を取得する。 */
   static async fetchAttendingRoom(
-      { userId, roomId }: {userId: string, roomId: string}
+      { userId, roomId }: { userId: string, roomId: string }
   ): Promise<AttendingRoom | undefined> {
       const ds = await MessageRepository.attendingRoomRef({ userId: userId, roomId: roomId }).get()
       return ds.data()
@@ -102,7 +102,7 @@ export class MessageRepository {
   }
 
   /** 指定した Room を取得する。 */
-  static async fetchRoom({ roomId }: {roomId: string}): Promise<Room | undefined> {
+  static async fetchRoom({ roomId }: { roomId: string }): Promise<Room | undefined> {
       const ds = await MessageRepository.roomRef({ roomId: roomId }).get()
       return ds.data()
   }

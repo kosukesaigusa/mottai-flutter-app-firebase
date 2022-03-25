@@ -1,7 +1,5 @@
 import * as admin from 'firebase-admin'
 import * as serviceAccountKey from '../keys/service_account_key.json'
-import { createFirebaseAuthCustomToken } from './callable-functions/custom-token/createFirebaseAuthCustomToken'
-import { onCreateTestNotificationRequest } from './firebase-functions/test-functions/onCreateTestNotificationRequest'
 
 // サービスアカウントを環境変数から取得
 const serviceAccount = {
@@ -24,7 +22,17 @@ admin.initializeApp({
     databaseURL: `https://${serviceAccount.projectId}.firebaseio.com`
 })
 
+/**
+ * ここでデプロイする関数をまとめる。
+ * admin.initializeApp() の順序の問題でデプロイに失敗するため。
+ *  */
+import { createFirebaseAuthCustomToken } from './callable-functions/custom-token/createFirebaseAuthCustomToken'
+import { onCreateMessage } from './firebase-functions/message/onCreateMessage'
+import { onCreateTestNotificationRequest } from './firebase-functions/test-functions/onCreateTestNotificationRequest'
+
+/** index.ts で import してデプロイする関数一覧  */
 export {
     onCreateTestNotificationRequest,
+    onCreateMessage,
     createFirebaseAuthCustomToken
 }

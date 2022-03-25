@@ -1,7 +1,6 @@
 interface AttendingRoom {
   roomId: string
-  hostId: string
-  workerId: string
+  partnerId: string
   updatedAt?: FirebaseFirestore.Timestamp | null
   unreadCount?: number
   muteNotification?: boolean

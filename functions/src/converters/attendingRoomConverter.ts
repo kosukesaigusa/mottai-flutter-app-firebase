@@ -5,8 +5,7 @@ export const attendingRoomConverter = {
         const data = qds.data()
         return {
             roomId: qds.id,
-            hostId: data.hostId,
-            workerId: data.workerId,
+            partnerId: data.partnerId,
             updatedAt: data.updatedAt ?? null,
             unreadCount: data.unreadCount ?? 0,
             muteNotification: data.muteNotification ?? false,
@@ -16,8 +15,7 @@ export const attendingRoomConverter = {
     toFirestore(attendingRoom: AttendingRoom): FirebaseFirestore.DocumentData {
         return {
             roomId: attendingRoom.roomId,
-            hostId: attendingRoom.hostId,
-            workerId: attendingRoom.workerId,
+            partnerId: attendingRoom.partnerId,
             updatedAt: FieldValue.serverTimestamp(),
             unreadCount: attendingRoom.unreadCount ?? 0,
             muteNotification: attendingRoom.muteNotification ?? false,

@@ -4,5 +4,5 @@ interface AttendingRoom {
   updatedAt?: FirebaseFirestore.Timestamp | null
   unreadCount?: number
   muteNotification?: boolean
-  lastReadMessageId?: string
+  lastReadMessageId?: string | null
 }

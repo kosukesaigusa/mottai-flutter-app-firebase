@@ -9,7 +9,7 @@ export const attendingRoomConverter = {
             updatedAt: data.updatedAt ?? null,
             unreadCount: data.unreadCount ?? 0,
             muteNotification: data.muteNotification ?? false,
-            lastReadMessageId: data.lastReadMessageId
+            lastReadMessageId: data.lastReadMessageId ?? null
         }
     },
     toFirestore(attendingRoom: AttendingRoom): FirebaseFirestore.DocumentData {
@@ -19,7 +19,7 @@ export const attendingRoomConverter = {
             updatedAt: FieldValue.serverTimestamp(),
             unreadCount: attendingRoom.unreadCount ?? 0,
             muteNotification: attendingRoom.muteNotification ?? false,
-            lastReadMessageId: attendingRoom.lastReadMessageId
+            lastReadMessageId: attendingRoom.lastReadMessageId ?? null
         }
     }
 }

@@ -4,7 +4,7 @@ import { attendingRoomConverter } from '../converters/attendingRoomConverter'
 import { messageConverter } from '../converters/messageConverter'
 import { roomConverter } from '../converters/roomConverter'
 
-/** message ドメイン関係のリポジトリ */
+/** Message ドメイン関係のリポジトリ */
 export class MessageRepository {
   static readonly domainCollectionName = `message`
   static readonly domainDocumentName = `v1Message`;

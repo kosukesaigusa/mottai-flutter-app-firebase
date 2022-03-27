@@ -4,7 +4,7 @@ interface Message {
   type: `plain` | `reply` | `images` | `information`
   senderId: string
   body: string
-  imageURLS: string[]
+  imageURLs: string[]
   detail?: MessageDetail
 }
 

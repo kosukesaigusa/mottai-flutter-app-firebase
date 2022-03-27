@@ -2,31 +2,31 @@ import * as admin from 'firebase-admin'
 import { CollectionReference, DocumentReference, Query } from '@google-cloud/firestore'
 import { accountConverter } from '../converters/accountConverter'
 
-/** Account のリポジトリ */
-export class AccountRepository {
+/** AppAccount のリポジトリ */
+export class AppAccountRepository {
   static readonly collectionName = `account`
 
-  static accountsRef: CollectionReference<Account> = admin.firestore()
-      .collection(AccountRepository.collectionName)
-      .withConverter<Account>(accountConverter)
+  static accountsRef: CollectionReference<AppAccount> = admin.firestore()
+      .collection(AppAccountRepository.collectionName)
+      .withConverter<AppAccount>(accountConverter)
 
   static accountRef(
       { accountId }: { accountId: string }
-  ): DocumentReference<Account> {
-      return AccountRepository.accountsRef
+  ): DocumentReference<AppAccount> {
+      return AppAccountRepository.accountsRef
           .doc(accountId)
-          .withConverter<Account>(accountConverter)
+          .withConverter<AppAccount>(accountConverter)
   }
 
-  /** Account 一覧を取得する。 */
+  /** AppAccount 一覧を取得する。 */
   static async fetchAccounts({
       queryBuilder,
       compare
   }: {
-  queryBuilder?: (query: Query<Account>) => Query<Account>,
-  compare?: (lhs: Account, rhs: Account) => number,
-}): Promise<Account[]> {
-      let query: Query<Account> = AccountRepository.accountsRef
+  queryBuilder?: (query: Query<AppAccount>) => Query<AppAccount>,
+  compare?: (lhs: AppAccount, rhs: AppAccount) => number,
+}): Promise<AppAccount[]> {
+      let query: Query<AppAccount> = AppAccountRepository.accountsRef
       if (queryBuilder !== undefined) {
           query = queryBuilder(query)
       }
@@ -38,11 +38,11 @@ export class AccountRepository {
       return result
   }
 
-  /** 指定した Account を取得する。 */
+  /** 指定した AppAccount を取得する。 */
   static async fetchAccount(
       { accountId }: { accountId: string }
-  ): Promise<Account | undefined> {
-      const ds = await AccountRepository.accountRef({ accountId: accountId }).get()
+  ): Promise<AppAccount | undefined> {
+      const ds = await AppAccountRepository.accountRef({ accountId: accountId }).get()
       return ds.data()
   }
 }

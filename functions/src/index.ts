@@ -27,12 +27,16 @@ admin.initializeApp({
  * admin.initializeApp() の順序の問題でデプロイに失敗するため。
  *  */
 import { createFirebaseAuthCustomToken } from './callable-functions/custom-token/createFirebaseAuthCustomToken'
+import { onCreateAccount } from './firebase-functions/account/onCreateAccount'
+import { onUpdateAccount } from './firebase-functions/account/onUpdateAccount'
 import { onCreateMessage } from './firebase-functions/message/onCreateMessage'
 import { onCreateTestNotificationRequest } from './firebase-functions/test-functions/onCreateTestNotificationRequest'
 
 /** index.ts で import してデプロイする関数一覧  */
 export {
     onCreateTestNotificationRequest,
+    onCreateAccount,
+    onUpdateAccount,
     onCreateMessage,
     createFirebaseAuthCustomToken
 }

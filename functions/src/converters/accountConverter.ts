@@ -1,7 +1,7 @@
 import { FieldValue } from "@google-cloud/firestore"
 
 export const accountConverter = {
-    fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): Account {
+    fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): AppAccount {
         const data = qds.data()
         return {
             accountId: qds.id,
@@ -12,7 +12,7 @@ export const accountConverter = {
             providers: data.providers ?? []
         }
     },
-    toFirestore(account: Account): FirebaseFirestore.DocumentData {
+    toFirestore(account: AppAccount): FirebaseFirestore.DocumentData {
         return {
             accountId: account.accountId,
             createdAt: FieldValue.serverTimestamp(),

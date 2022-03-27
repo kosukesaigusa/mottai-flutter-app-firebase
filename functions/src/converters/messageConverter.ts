@@ -9,7 +9,7 @@ export const messageConverter = {
             type: data.type,
             senderId: data.senderId,
             body: data.body,
-            imageURLS: data.imageURLS ?? [],
+            imageURLs: data.imageURLs ?? [],
             detail: data.detail
         }
     },
@@ -20,7 +20,7 @@ export const messageConverter = {
             type: message.type,
             senderId: message.senderId,
             body: message.body,
-            imageURLs: message.imageURLS ?? [],
+            imageURLs: message.imageURLs ?? [],
             detail: message.detail
         }
     }

@@ -4,7 +4,7 @@ import { publicUserConverter } from '../converters/publicUserConverter'
 
 /** PublicUser のリポジトリ */
 export class PublicUserRepository {
-  static readonly collectionName = `publicUser`
+  static readonly collectionName = `publicUsers`
 
   static publicUsersRef: CollectionReference<PublicUser> = admin.firestore()
       .collection(PublicUserRepository.collectionName)

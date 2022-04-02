@@ -4,7 +4,7 @@ import { accountConverter } from '../converters/accountConverter'
 
 /** AppAccount のリポジトリ */
 export class AppAccountRepository {
-  static readonly collectionName = `account`
+  static readonly collectionName = `accounts`
 
   static accountsRef: CollectionReference<AppAccount> = admin.firestore()
       .collection(AppAccountRepository.collectionName)

@@ -1,3 +1,4 @@
+import { FieldValue } from '@google-cloud/firestore'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
 import { attendingRoomConverter } from '../../../src/converters/attendingRoomConverter'
@@ -26,12 +27,15 @@ export const onCreateMessage = functions
         const hostAttendingRoom = await hostAttendingRoomRef.get()
         const workerAttendingRoom = await workerAttendingRoomRef.get()
 
-        // バッチ書き込みする
+        // ルーム参加者のそれぞれの AttendingRoom バッチ書き込みする。
+        // すでに AttendingRoom が存在していれば updatedAt と unreadCount を更新する。
+        // 存在しなければ新たに set する。
         const batch = admin.firestore().batch()
-        if (hostAttendingRoom.exists && workerAttendingRoom.exists) {
-            return
-        }
-        if (!hostAttendingRoom.exists) {
+        if (hostAttendingRoom.exists) {
+            batch.update(hostAttendingRoomRef, {
+                updatedAt: FieldValue.serverTimestamp()
+            })
+        } else {
             const partnerId = workerId
             batch.set(
                 hostAttendingRoomRef,
@@ -39,6 +43,10 @@ export const onCreateMessage = functions
             )
         }
         if (!workerAttendingRoom.exists) {
+            batch.update(workerAttendingRoomRef, {
+                updatedAt: FieldValue.serverTimestamp()
+            })
+        } else {
             const partnerId = hostId
             batch.set(
                 workerAttendingRoomRef,

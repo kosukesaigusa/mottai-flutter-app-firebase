@@ -9,6 +9,7 @@ export const attendingRoomConverter = {
             updatedAt: data.updatedAt ?? null,
             unreadCount: data.unreadCount ?? 0,
             muteNotification: data.muteNotification ?? false,
+            isBlocked: data.isBlocked ?? false,
             lastReadMessageId: data.lastReadMessageId ?? null
         }
     },
@@ -19,6 +20,7 @@ export const attendingRoomConverter = {
             updatedAt: FieldValue.serverTimestamp(),
             unreadCount: attendingRoom.unreadCount ?? 0,
             muteNotification: attendingRoom.muteNotification ?? false,
+            isBlocked: attendingRoom.isBlocked ?? false,
             lastReadMessageId: attendingRoom.lastReadMessageId ?? null
         }
     }

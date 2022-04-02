@@ -10,7 +10,8 @@ export const messageConverter = {
             senderId: data.senderId,
             body: data.body,
             imageURLs: data.imageURLs ?? [],
-            detail: data.detail
+            detail: data.detail,
+            isDeleted: data.isDeleted ?? false
         }
     },
     toFirestore(message: Message): FirebaseFirestore.DocumentData {
@@ -21,7 +22,8 @@ export const messageConverter = {
             senderId: message.senderId,
             body: message.body,
             imageURLs: message.imageURLs ?? [],
-            detail: message.detail
+            detail: message.detail,
+            isDeleted: message.isDeleted ?? false
         }
     }
 }

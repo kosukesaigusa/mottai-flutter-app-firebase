@@ -6,6 +6,7 @@ interface Message {
   body: string
   imageURLs: string[]
   detail?: MessageDetail
+  isDeleted?: boolean
 }
 
 interface MessageDetail {

@@ -3,7 +3,8 @@ interface AppAccount {
   accountId: string
   createdAt?: FirebaseFirestore.Timestamp | null
   updatedAt?: FirebaseFirestore.Timestamp | null
-  displayName: string
+  displayName: string | null
   imageURL: string | null
   providers: string[]
+  fcmTokens?: string[]
 }

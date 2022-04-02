@@ -19,10 +19,7 @@ export class PublicUserRepository {
   }
 
   /** PublicUser 一覧を取得する。 */
-  static async fetchPublicUsers({
-      queryBuilder,
-      compare
-  }: {
+  static async fetchPublicUsers({ queryBuilder, compare }: {
   queryBuilder?: (query: Query<PublicUser>) => Query<PublicUser>,
   compare?: (lhs: PublicUser, rhs: PublicUser) => number,
 }): Promise<PublicUser[]> {

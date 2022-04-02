@@ -9,7 +9,7 @@ export const onCreateAccount = functions
         const account = accountConverter.fromFirestore(snapshot)
         const publicUser: PublicUser = {
             userId: account.accountId,
-            displayName: account.displayName,
+            displayName: account.displayName ?? `未設定`,
             imageURL: account.imageURL ?? null
         }
         try {

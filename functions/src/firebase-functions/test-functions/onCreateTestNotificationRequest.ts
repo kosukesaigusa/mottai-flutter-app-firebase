@@ -13,6 +13,6 @@ export const onCreateTestNotificationRequest = functions
         const title = `テスト通知`
         const body = `これはテスト通知です。タップすると現在のタブ上で通知の受けページに遷移します。`
         const path = `/notification/`
-        await sendFCMByToken(token, title, body, path)
+        await sendFCMByToken({ token, title, body, path })
         functions.logger.log(`👌 Test Notification succeeded.`)
     })

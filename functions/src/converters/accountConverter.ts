@@ -9,7 +9,8 @@ export const accountConverter = {
             updatedAt: data.updatedAt ?? null,
             displayName: data.displayName,
             imageURL: data.imageURL ?? null,
-            providers: data.providers ?? []
+            providers: data.providers ?? [],
+            fcmTokens: data.fcmTokens ?? []
         }
     },
     toFirestore(account: AppAccount): FirebaseFirestore.DocumentData {
@@ -19,7 +20,8 @@ export const accountConverter = {
             updatedAt: FieldValue.serverTimestamp(),
             displayName: account.displayName,
             imageURL: account.imageURL ?? null,
-            providers: account.providers ?? []
+            providers: account.providers ?? [],
+            fcmTokens: account.fcmTokens ?? []
         }
     }
 }

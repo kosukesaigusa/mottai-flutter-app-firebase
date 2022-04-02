@@ -24,14 +24,14 @@ export const onCreateMessage = functions
         const workerId = room.workerId
         const hostAttendingRoomRef = MessageRepository.attendingRoomRef({ userId: hostId, roomId: roomId })
         const workerAttendingRoomRef = MessageRepository.attendingRoomRef({ userId: workerId, roomId: roomId })
-        const hostAttendingRoom = await hostAttendingRoomRef.get()
-        const workerAttendingRoom = await workerAttendingRoomRef.get()
+        const hostAttendingRoomDs = await hostAttendingRoomRef.get()
+        const workerAttendingRoomDs = await workerAttendingRoomRef.get()
 
         // ルーム参加者のそれぞれの AttendingRoom バッチ書き込みする。
         // すでに AttendingRoom が存在していれば updatedAt と unreadCount を更新する。
         // 存在しなければ新たに set する。
         const batch = admin.firestore().batch()
-        if (hostAttendingRoom.exists) {
+        if (hostAttendingRoomDs.exists) {
             batch.update(hostAttendingRoomRef, {
                 updatedAt: FieldValue.serverTimestamp()
             })
@@ -42,7 +42,7 @@ export const onCreateMessage = functions
                 attendingRoomConverter.toFirestore({ roomId, partnerId }),
             )
         }
-        if (!workerAttendingRoom.exists) {
+        if (workerAttendingRoomDs.exists) {
             batch.update(workerAttendingRoomRef, {
                 updatedAt: FieldValue.serverTimestamp()
             })

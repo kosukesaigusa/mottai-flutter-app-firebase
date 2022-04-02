@@ -70,13 +70,13 @@ export const onCreateMessage = functions
         // 通知を送る対象を確認する
         const userIds: string[] = []
         if (senderId === hostId) {
-            const canSendFCM = (workerAttendingRoom?.isBlocked ?? false) && (workerAttendingRoom?.muteNotification ?? false)
-            if (canSendFCM) {
+            const cannotSendFCM = (workerAttendingRoom?.isBlocked ?? false) && (workerAttendingRoom?.muteNotification ?? false)
+            if (cannotSendFCM) {
                 userIds.push(workerId)
             }
         } else if (senderId === workerId) {
-            const canSendFCM = (hostAttendingRoom?.isBlocked ?? false) && (hostAttendingRoom?.muteNotification ?? false)
-            if (canSendFCM) {
+            const cannotSendFCM = (hostAttendingRoom?.isBlocked ?? false) && (hostAttendingRoom?.muteNotification ?? false)
+            if (cannotSendFCM) {
                 userIds.push(workerId)
             }
         }

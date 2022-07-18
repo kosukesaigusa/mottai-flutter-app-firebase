@@ -20,21 +20,17 @@ module.exports = {
     ignorePatterns: [
         `/lib/**/*` // Ignore built files.
     ],
-    plugins: [
-        `node`,
-        `@typescript-eslint`,
-        `import`
-    ],
+    plugins: [`node`, `@typescript-eslint`, `import`],
     rules: {
-        'quotes': [`error`, `backtick`],
-        'semi': [`error`, `never`],
-        'semi-spacing': [`error`, { 'after': true, 'before': false }],
+        quotes: [`error`, `backtick`],
+        semi: [`error`, `never`],
+        'semi-spacing': [`error`, { after: true, before: false }],
         'semi-style': [`error`, `last`],
         'no-extra-semi': `error`,
         'no-unexpected-multiline': `error`,
         'no-unreachable': `error`,
-        'indent': [`error`, 4],
-        'no-multi-spaces': [`error`, { exceptions: { 'Property': false } }],
+        indent: [`error`, 4],
+        'no-multi-spaces': [`error`, { exceptions: { Property: false } }],
         'max-len': [`error`, 160],
         'import/no-unresolved': `off`,
         'no-irregular-whitespace': `error`,
@@ -43,10 +39,7 @@ module.exports = {
         'no-debugger': `off`,
 
         // `export` functions may be listed first.
-        '@typescript-eslint/no-use-before-define': [
-            `error`,
-            { functions: true, classes: false, variables: true }
-        ],
+        '@typescript-eslint/no-use-before-define': [`error`, { functions: true, classes: false, variables: true }],
 
         // To read environment variables.
         '@typescript-eslint/no-non-null-assertion': `off`,

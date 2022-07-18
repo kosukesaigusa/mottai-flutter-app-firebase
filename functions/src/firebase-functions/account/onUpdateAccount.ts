@@ -15,11 +15,11 @@ export const onUpdateAccount = functions
         try {
             await snapshot.after.ref.update({
                 displayName: after.displayName,
-                imageURL: after.imageURL ?? null,
+                imageURL: after.imageURL,
                 updatedAt: FieldValue.serverTimestamp()
             })
         } catch (e) {
-            functions.logger.error(`⚠️ onUpdateAccount に失敗しました: ${e}`)
+            functions.logger.error(`onUpdateAccount に失敗しました: ${e}`)
         }
     })
 

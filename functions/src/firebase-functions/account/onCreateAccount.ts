@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
-import { PublicUserRepository } from '../../../src/repository/publicUser'
 import { accountConverter } from '../../../src/converters/accountConverter'
+import { publicUserRef } from '../../../src/firestore-refs/firestoreRefs'
 
 export const onCreateAccount = functions
     .region(`asia-northeast1`)
@@ -9,13 +9,12 @@ export const onCreateAccount = functions
         const account = accountConverter.fromFirestore(snapshot)
         const publicUser: PublicUser = {
             userId: account.accountId,
-            displayName: account.displayName ?? `未設定`,
-            imageURL: account.imageURL ?? null
+            displayName: account.displayName,
+            imageURL: account.imageURL
         }
         try {
-            await PublicUserRepository
-                .publicUserRef({ publicUserId: account.accountId }).set(publicUser)
+            await publicUserRef({ publicUserId: account.accountId }).set(publicUser)
         } catch (e) {
-            functions.logger.error(`⚠️ onCreateAccount に失敗しました: ${e}`)
+            functions.logger.error(`onCreateAccount に失敗しました: ${e}`)
         }
     })

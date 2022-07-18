@@ -8,7 +8,7 @@ export const onUpdateAccount = functions
     .onUpdate(async (snapshot) => {
         const before = accountConverter.fromFirestore(snapshot.before)
         const after = accountConverter.fromFirestore(snapshot.after)
-        const willUpdate = (before.displayName !== after.displayName) || (before.imageURL!== after.imageURL)
+        const willUpdate = before.displayName !== after.displayName || before.imageURL !== after.imageURL
         if (!willUpdate) {
             return
         }
@@ -22,6 +22,3 @@ export const onUpdateAccount = functions
             functions.logger.error(`onUpdateAccount に失敗しました: ${e}`)
         }
     })
-
-
-

@@ -1,4 +1,4 @@
-import { DocumentData, FieldValue, FirestoreDataConverter, QueryDocumentSnapshot } from "@google-cloud/firestore"
+import { DocumentData, FieldValue, FirestoreDataConverter, QueryDocumentSnapshot } from '@google-cloud/firestore'
 
 export const attendingRoomConverter: FirestoreDataConverter<AttendingRoom> = {
     fromFirestore(qds: QueryDocumentSnapshot): AttendingRoom {

@@ -1,6 +1,6 @@
 interface PublicUser {
-  userId: string
-  updatedAt?: FirebaseFirestore.Timestamp
-  displayName: string
-  imageURL: string
+    userId: string
+    updatedAt?: FirebaseFirestore.Timestamp
+    displayName: string
+    imageURL: string
 }

@@ -1,13 +1,13 @@
-import { FieldValue } from "@google-cloud/firestore"
+import { FieldValue, FirestoreDataConverter } from "@google-cloud/firestore"
 
-export const publicUserConverter = {
+export const publicUserConverter: FirestoreDataConverter<PublicUser> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): PublicUser {
         const data = qds.data()
         return {
             userId: qds.id,
-            updatedAt: data.updatedAt ?? null,
+            updatedAt: data.updatedAt,
             displayName: data.displayName,
-            imageURL: data.imageURL ?? null
+            imageURL: data.imageURL
         }
     },
     toFirestore(publicUser: PublicUser): FirebaseFirestore.DocumentData {
@@ -15,7 +15,7 @@ export const publicUserConverter = {
             userId: publicUser.userId,
             updatedAt: FieldValue.serverTimestamp(),
             displayName: publicUser.displayName,
-            imageURL: publicUser.imageURL ?? null
+            imageURL: publicUser.imageURL
         }
     }
 }

@@ -1,13 +1,13 @@
-import { FieldValue } from "@google-cloud/firestore"
+import { FieldValue, FirestoreDataConverter } from "@google-cloud/firestore"
 
-export const roomConverter = {
+export const roomConverter: FirestoreDataConverter<Room> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): Room {
         const data = qds.data()
         return {
             roomId: qds.id,
             hostId: data.hostId,
             workerId: data.workerId,
-            updatedAt: data.updatedAt ?? null
+            updatedAt: data.updatedAt
         }
     },
     toFirestore(room: Room): FirebaseFirestore.DocumentData {

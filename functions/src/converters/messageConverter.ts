@@ -1,11 +1,11 @@
-import { FieldValue } from "@google-cloud/firestore"
+import { FieldValue, FirestoreDataConverter } from "@google-cloud/firestore"
 
-export const messageConverter = {
+export const messageConverter: FirestoreDataConverter<Message> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): Message {
         const data = qds.data()
         return {
             messageId: qds.id,
-            createdAt: data.createdAt ?? null,
+            createdAt: data.createdAt,
             type: data.type,
             senderId: data.senderId,
             body: data.body,

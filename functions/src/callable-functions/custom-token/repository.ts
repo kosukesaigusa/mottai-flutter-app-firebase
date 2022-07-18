@@ -23,7 +23,7 @@ export const getVerifyAPI = async (
             expiresIn: response.data.expires_in
         }
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }
 
@@ -52,7 +52,7 @@ export const postVerifyAPI = async (
         return { email }
     } catch (e) {
         functions.logger.log(e)
-        throw new Error(`⚠️ LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }
 
@@ -79,7 +79,7 @@ export const getLINEProfile = async (
             pictureUrl: response.data.pictureUrl ?? null
         }
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /v2/profile で失敗しました。${e}`)
+        throw new Error(`LINE の GET /v2/profile で失敗しました。${e}`)
     }
 }
 
@@ -125,6 +125,6 @@ export const createCustomToken = async (userId: string): Promise<string> => {
         const customToken = await admin.auth().createCustomToken(userId)
         return customToken
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }

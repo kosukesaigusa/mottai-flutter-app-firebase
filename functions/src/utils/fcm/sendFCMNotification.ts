@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions'
 import { messaging } from 'firebase-admin'
-import { AppAccountRepository } from '../../repositories/account'
+import { AppAccountRepository } from '~/src/repositories/account'
 
 /**
  * 1次元配列を 500 要素ずつの 2 次元配列に分割する

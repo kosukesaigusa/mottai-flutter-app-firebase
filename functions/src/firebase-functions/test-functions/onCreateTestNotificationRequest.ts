@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions'
-import { sendFCMByToken } from '../../utils/fcm/sendFCMNotification'
+import { sendFCMByToken } from '~/src/utils/fcm/sendFCMNotification'
 
 /**
  * テスト通知のリクエスト

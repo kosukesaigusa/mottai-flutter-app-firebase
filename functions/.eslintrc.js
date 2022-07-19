@@ -18,5 +18,10 @@ module.exports = {
     plugins: [`node`, `@typescript-eslint`, `import`],
     rules: {
         quotes: [`error`, `backtick`]
+    },
+    settings: {
+        'import/resolver': {
+            typescript: { project: `./` }
+        }
     }
 }

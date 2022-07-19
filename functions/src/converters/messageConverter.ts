@@ -1,4 +1,5 @@
 import { FieldValue, FirestoreDataConverter } from '@google-cloud/firestore'
+import { Message } from '../models/message'
 
 export const messageConverter: FirestoreDataConverter<Message> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): Message {

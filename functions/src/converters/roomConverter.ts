@@ -1,4 +1,5 @@
 import { FieldValue, FirestoreDataConverter } from '@google-cloud/firestore'
+import { Room } from '../models/room'
 
 export const roomConverter: FirestoreDataConverter<Room> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): Room {

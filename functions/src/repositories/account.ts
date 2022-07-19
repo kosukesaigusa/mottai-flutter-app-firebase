@@ -1,4 +1,5 @@
 import { accountRef } from '../firestore-refs/firestoreRefs'
+import { AppAccount } from '../models/account'
 
 /** AppAccount のリポジトリクラス */
 export class AppAccountRepository {

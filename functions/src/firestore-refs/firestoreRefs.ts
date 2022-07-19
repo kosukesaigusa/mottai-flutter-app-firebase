@@ -1,10 +1,15 @@
 import * as admin from 'firebase-admin'
 import { CollectionReference, DocumentReference } from '@google-cloud/firestore'
+import { AttendingRoom } from '../models/attendingRoom'
 import { accountConverter } from '../converters/accountConverter'
 import { attendingRoomConverter } from '../converters/attendingRoomConverter'
 import { roomConverter } from '../converters/roomConverter'
 import { messageConverter } from '../converters/messageConverter'
 import { publicUserConverter } from '../converters/publicUserConverter'
+import { AppAccount } from '../models/account'
+import { Message } from '../models/message'
+import { PublicUser } from '../models/publicUser'
+import { Room } from '../models/room'
 
 const db = admin.firestore()
 

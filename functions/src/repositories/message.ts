@@ -1,4 +1,6 @@
 import { attendingRoomRef, roomRef } from '../firestore-refs/firestoreRefs'
+import { AttendingRoom } from '../models/attendingRoom'
+import { Room } from '../models/room'
 
 /** Message ドメイン関係のリポジトリ */
 export class MessageRepository {

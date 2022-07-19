@@ -1,14 +1,22 @@
 import { FieldValue } from '@google-cloud/firestore'
 import * as admin from 'firebase-admin'
 import * as functions from 'firebase-functions'
-import { PublicUserRepository } from '../../repositories/publicUser'
-import { sendFCMByUserIds } from '../../../src/utils/fcm/sendFCMNotification'
-import { attendingRoomConverter } from '../../../src/converters/attendingRoomConverter'
-import { messageConverter } from '../../../src/converters/messageConverter'
-import { MessageRepository } from '../../repositories/message'
-import { attendingRoomRef } from '../../firestore-refs/firestoreRefs'
+import { attendingRoomConverter } from '~/src/converters/attendingRoomConverter'
+import { messageConverter } from '~/src/converters/messageConverter'
+import { attendingRoomRef } from '~/src/firestore-refs/firestoreRefs'
+import { AttendingRoom } from '~/src/models/attendingRoom'
+import { Message } from '~/src/models/message'
+import { PublicUser } from '~/src/models/publicUser'
+import { Room } from '~/src/models/room'
+import { MessageRepository } from '~/src/repositories/message'
+import { PublicUserRepository } from '~/src/repositories/publicUser'
+import { sendFCMByUserIds } from '~/src/utils/fcm/sendFCMNotification'
 
-/** チャットルームに新しいメッセージが作成されたときに発火する。*/
+/**
+ * チャットルームに新しいメッセージが作成されたときに発火する。
+ * チャットルーム参加者のそれぞれの AttendingRoom の書き込みと、
+ * メッセージの受信者への通知の送信を行う。
+ */
 export const onCreateMessage = functions
     .region(`asia-northeast1`)
     .firestore.document(`message/{v1Message}/rooms/{roomId}/messages/{messageId}`)
@@ -28,16 +36,16 @@ export const onCreateMessage = functions
         const hostAttendingRoom = await messageRepository.fetchAttendingRoom({ userId: hostId, roomId: roomId })
         const workerAttendingRoom = await messageRepository.fetchAttendingRoom({ userId: workerId, roomId: roomId })
 
-        // チャットルーム参加者のそれぞれの AttendingRoom を更新する。
+        // チャットルーム参加者のそれぞれの AttendingRoom を更新 or 作成する。
         try {
-            writeAttendingRoom({ hostAttendingRoom, workerAttendingRoom, room: room })
+            updateAttendingRoomsByMessage({ hostAttendingRoom, workerAttendingRoom, room: room })
             functions.logger.info(`onCreateMessage による AttendingRoom の更新に成功しました。`)
         } catch (e) {
             functions.logger.error(`onCreateMessage のバッチ書き込みに失敗しました。：${e}`)
             return
         }
 
-        // 対象者に通知を送る。
+        // メッセージの受信者に通知を送る。
         try {
             await sendNotificationToReceiver({ hostAttendingRoom, workerAttendingRoom, room, message, sender })
             functions.logger.info(`onCreateMessage による通知の送信に成功しました。`)
@@ -51,7 +59,7 @@ export const onCreateMessage = functions
  * すでに AttendingRoom が存在していれば updatedAt と unreadCount を更新する。
  * 存在しなければ新たに AttendingRoom ドキュメントを set する。
  */
-const writeAttendingRoom = async ({
+const updateAttendingRoomsByMessage = async ({
     hostAttendingRoom,
     workerAttendingRoom,
     room
@@ -76,14 +84,7 @@ const writeAttendingRoom = async ({
     } else {
         batch.set(
             hostAttendingRoomRef,
-            attendingRoomConverter.toFirestore({
-                roomId: roomId,
-                partnerId: workerId,
-                unreadCount: 0,
-                muteNotification: false,
-                isBlocked: false,
-                lastReadMessageId: ``
-            })
+            attendingRoomConverter.toFirestore(new AttendingRoom({ roomId, partnerId: workerId }))
         )
     }
     if (workerAttendingRoom !== undefined) {
@@ -94,14 +95,7 @@ const writeAttendingRoom = async ({
     } else {
         batch.set(
             workerAttendingRoomRef,
-            attendingRoomConverter.toFirestore({
-                roomId: roomId,
-                partnerId: hostId,
-                unreadCount: 0,
-                muteNotification: false,
-                isBlocked: false,
-                lastReadMessageId: ``
-            })
+            attendingRoomConverter.toFirestore(new AttendingRoom({ roomId, partnerId: hostId }))
         )
     }
     await batch.commit()

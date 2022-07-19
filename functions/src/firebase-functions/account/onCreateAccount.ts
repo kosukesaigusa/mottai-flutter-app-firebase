@@ -1,7 +1,12 @@
 import * as functions from 'firebase-functions'
-import { accountConverter } from '../../../src/converters/accountConverter'
-import { publicUserRef } from '../../../src/firestore-refs/firestoreRefs'
+import { accountConverter } from '~/src/converters/accountConverter'
+import { publicUserRef } from '~/src/firestore-refs/firestoreRefs'
+import { PublicUser } from '~/src/models/publicUser'
 
+/**
+ * 新しい account ドキュメントが作成されたときに発火する。
+ * account ドキュメントに対応する publicUser ドキュメントを作成する。
+ */
 export const onCreateAccount = functions
     .region(`asia-northeast1`)
     .firestore.document(`/accounts/{accountId}`)
@@ -15,6 +20,6 @@ export const onCreateAccount = functions
         try {
             await publicUserRef({ publicUserId: account.accountId }).set(publicUser)
         } catch (e) {
-            functions.logger.error(`onCreateAccount に失敗しました: ${e}`)
+            functions.logger.error(`account ドキュメントの作成に伴う publicUser の作成に失敗しました: ${e}`)
         }
     })

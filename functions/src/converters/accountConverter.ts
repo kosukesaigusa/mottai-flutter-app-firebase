@@ -1,4 +1,5 @@
 import { FieldValue, FirestoreDataConverter } from '@google-cloud/firestore'
+import { AppAccount } from '../models/account'
 
 export const accountConverter: FirestoreDataConverter<AppAccount> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): AppAccount {

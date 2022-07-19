@@ -1,4 +1,5 @@
 import { FieldValue, FirestoreDataConverter } from '@google-cloud/firestore'
+import { PublicUser } from '../models/publicUser'
 
 export const publicUserConverter: FirestoreDataConverter<PublicUser> = {
     fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): PublicUser {

@@ -1,4 +1,5 @@
 import { publicUserRef } from '../firestore-refs/firestoreRefs'
+import { PublicUser } from '../models/publicUser'
 
 /** PublicUser のリポジトリ */
 export class PublicUserRepository {

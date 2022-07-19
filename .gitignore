@@ -83,4 +83,5 @@ node_modules/
 .env
 
 # Service account key
-/functions/keys/service_account_key.json
+**keys/service_account_key.json
+**keys/dev_service_account_key.json

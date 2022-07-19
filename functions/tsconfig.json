@@ -13,7 +13,7 @@
         "paths": {
             "~/*": ["./*"]
         },
-        "types": ["@types/node"]
+        "types": ["@types/node", "jest"]
     },
     "compileOnSave": true,
     "exclude": ["node_modules", "lib"]

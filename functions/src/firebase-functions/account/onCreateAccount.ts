@@ -12,11 +12,11 @@ export const onCreateAccount = functions
     .firestore.document(`/accounts/{accountId}`)
     .onCreate(async (snapshot) => {
         const account = accountConverter.fromFirestore(snapshot)
-        const publicUser: PublicUser = {
+        const publicUser = new PublicUser({
             userId: account.accountId,
             displayName: account.displayName,
             imageURL: account.imageURL
-        }
+        })
         try {
             await publicUserRef({ publicUserId: account.accountId }).set(publicUser)
         } catch (e) {

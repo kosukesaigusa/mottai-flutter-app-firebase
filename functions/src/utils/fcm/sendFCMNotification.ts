@@ -1,16 +1,12 @@
 import * as functions from 'firebase-functions'
 import { messaging } from 'firebase-admin'
-import { AppAccountRepository } from '../../../src/repository/account'
+import { AppAccountRepository } from '~/src/repositories/account'
 
 /**
  * 1次元配列を 500 要素ずつの 2 次元配列に分割する
  */
 const arrayChunk = ([...array], size = 500): string[][] => {
-    return array.reduce(
-        (acc, _, index) =>
-            index % size ? acc : [...acc, array.slice(index, index + size)],
-        []
-    )
+    return array.reduce((acc, _, index) => (index % size ? acc : [...acc, array.slice(index, index + size)]), [])
 }
 
 /**
@@ -21,8 +17,18 @@ const arrayChunk = ([...array], size = 500): string[][] => {
  * ひとりが 500 個以上の異なるトークンを保持することは本来想定していないが、500 個ごとに
  * チャンクして送信する。
  */
-export const sendFCMByTargets = async ({ fcmTargets, title, body, path, documentId }: {
-  fcmTargets: FCMTarget[], title: string, body: string, path: RoutePath, documentId?: string
+export const sendFCMByTargets = async ({
+    fcmTargets,
+    title,
+    body,
+    path,
+    documentId
+}: {
+    fcmTargets: FCMTarget[]
+    title: string
+    body: string
+    path: RoutePath
+    documentId?: string
 }): Promise<void> => {
     for (const fcmTarget of fcmTargets) {
         const twoDimensionTokens = arrayChunk(fcmTarget.fcmTokens)
@@ -69,10 +75,10 @@ export const sendFCMByTargets = async ({ fcmTargets, title, body, path, document
                         failedTokens.push(twoDimensionTokens[i][j])
                     }
                 })
-                functions.logger.warn(`⚠️ 送信に失敗した FCM Token（${response.failureCount}個）: ${failedTokens}`)
+                functions.logger.warn(`送信に失敗した FCM Token（${response.failureCount}個）: ${failedTokens}`)
                 return
             }
-            functions.logger.log(`🎉 指定した全員に通知送信が成功しました`)
+            functions.logger.log(`指定した全員に通知送信が成功しました`)
         }
     }
 }
@@ -82,12 +88,21 @@ export const sendFCMByTargets = async ({ fcmTargets, title, body, path, document
  * その FCM Token と未読カウントから FCMTarget を作成し、
  * sendFCMByTargets に処理を渡す。
  */
-export const sendFCMByUserIds = async ({ userIds, title, body, path }: {
-  userIds: string[], title: string, body: string, path: RoutePath
+export const sendFCMByUserIds = async ({
+    userIds,
+    title,
+    body,
+    path
+}: {
+    userIds: string[]
+    title: string
+    body: string
+    path: RoutePath
 }): Promise<void> => {
     const fcmTargets: FCMTarget[] = []
     for (const accountId of userIds) {
-        const account = await AppAccountRepository.fetchAccount({ accountId })
+        const accountRepository = new AppAccountRepository()
+        const account = await accountRepository.fetchAccount({ accountId })
         if (account === undefined) {
             continue
         }
@@ -103,13 +118,22 @@ export const sendFCMByUserIds = async ({ userIds, title, body, path }: {
  * 受け取った FCM トークンに対して通知を打つ。
  * テスト用。
  */
-export const sendFCMByToken= async ({ token, title, body, path }: {
-  token: string, title: string, body: string, path: RoutePath
+export const sendFCMByToken = async ({
+    token,
+    title,
+    body,
+    path
+}: {
+    token: string
+    title: string
+    body: string
+    path: RoutePath
 }): Promise<void> => {
-    const fcmTargets: FCMTarget[] = [{
-        fcmTokens: [token],
-        badgeNumber: 1
-    }]
+    const fcmTargets: FCMTarget[] = [
+        {
+            fcmTokens: [token],
+            badgeNumber: 1
+        }
+    ]
     await sendFCMByTargets({ fcmTargets, title, body, path })
 }
-

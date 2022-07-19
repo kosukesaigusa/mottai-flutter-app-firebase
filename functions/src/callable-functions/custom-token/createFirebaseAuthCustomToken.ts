@@ -1,5 +1,11 @@
 import * as functions from 'firebase-functions'
-import { createCustomToken, getLINEProfile, getOrCreateFirebaseAuthUser, getVerifyAPI, postVerifyAPI } from './repository'
+import {
+    createCustomToken,
+    getLINEProfile,
+    getOrCreateFirebaseAuthUser,
+    getVerifyAPI,
+    postVerifyAPI
+} from './repository'
 
 /**
  * LINE ログイン用の Firebase Auth のカスタムトークン認証のための Callable Function。
@@ -16,34 +22,26 @@ import { createCustomToken, getLINEProfile, getOrCreateFirebaseAuthUser, getVeri
  * 3 の Custom Token の作成に使用するユーザー ID は 1 で検証を済ませた LINE のアクセストークンとする。
  * 5. 3 で得られるユーザー ID から Firebase Auth の Custom Token を作成する。
  */
-export const createFirebaseAuthCustomToken = functions
-    .region(`asia-northeast1`)
-    .https.onCall(async (data) => {
-        const accessToken = data.accessToken as string
-        const idToken = data.idToken as string
-        try {
-            // Step 1, 2
-            const promises = await Promise.all([
-                getVerifyAPI({ accessToken }),
-                postVerifyAPI({ idToken })
-            ])
-            const channelId = promises[0].channelId
-            const expiresIn = promises[0].expiresIn
-            const email = promises[1].email
-            // Step 3
-            const lineProfile = await getLINEProfile(accessToken)
-            // Step 4
-            const userRecord = await getOrCreateFirebaseAuthUser({ uid: lineProfile.userId, email })
-            // Step 5
-            const customToken = await createCustomToken(userRecord.uid)
-            return { channelId, expiresIn, customToken }
-        } catch (e) {
-            if (e instanceof Error) {
-                functions.logger.log(e.message)
-            }
-            throw new functions.https.HttpsError(
-                `internal`,
-                `LINE ログインを用いた認証に失敗しました。`
-            )
+export const createFirebaseAuthCustomToken = functions.region(`asia-northeast1`).https.onCall(async (data) => {
+    const accessToken = data.accessToken as string
+    const idToken = data.idToken as string
+    try {
+        // Step 1, 2
+        const promises = await Promise.all([getVerifyAPI({ accessToken }), postVerifyAPI({ idToken })])
+        const channelId = promises[0].channelId
+        const expiresIn = promises[0].expiresIn
+        const email = promises[1].email
+        // Step 3
+        const lineProfile = await getLINEProfile(accessToken)
+        // Step 4
+        const userRecord = await getOrCreateFirebaseAuthUser({ uid: lineProfile.userId, email })
+        // Step 5
+        const customToken = await createCustomToken(userRecord.uid)
+        return { channelId, expiresIn, customToken }
+    } catch (e) {
+        if (e instanceof Error) {
+            functions.logger.log(e.message)
         }
-    })
+        throw new functions.https.HttpsError(`internal`, `LINE ログインを用いた認証に失敗しました。`)
+    }
+})

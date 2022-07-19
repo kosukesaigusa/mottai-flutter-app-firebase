@@ -8,9 +8,11 @@ import * as settings from '../../../settings/settings.json'
  * LINE の GET Verify API を実行してチャンネル ID と有効期限を返す。
  * @param {string} accessToken - アクセストークン
  */
-export const getVerifyAPI = async (
-    { accessToken }: {accessToken: string}
-): Promise<{channelId: string, expiresIn: number}> => {
+export const getVerifyAPI = async ({
+    accessToken
+}: {
+    accessToken: string
+}): Promise<{ channelId: string; expiresIn: number }> => {
     try {
         const response = await axios.get<LINEGetVerifyAPIResponse>(
             `https://api.line.me/oauth2/v2.1/verify?access_token=${accessToken}`
@@ -23,7 +25,7 @@ export const getVerifyAPI = async (
             expiresIn: response.data.expires_in
         }
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }
 
@@ -31,9 +33,7 @@ export const getVerifyAPI = async (
  * LINE の POST Verify API を実行して...
  * @param {string} accessToken - アクセストークン
  */
-export const postVerifyAPI = async (
-    { idToken }: {idToken: string}
-): Promise<{email: string}> => {
+export const postVerifyAPI = async ({ idToken }: { idToken: string }): Promise<{ email: string }> => {
     const params = new url.URLSearchParams({
         id_token: idToken,
         client_id: settings.line_channel_id
@@ -41,7 +41,8 @@ export const postVerifyAPI = async (
     try {
         const response = await axios.post<LINEPostVerifyAPIResponse>(
             `https://api.line.me/oauth2/v2.1/verify/`,
-            params.toString(), {
+            params.toString(),
+            {
                 headers: { 'content-type': `application/x-www-form-urlencoded` }
             }
         )
@@ -52,7 +53,7 @@ export const postVerifyAPI = async (
         return { email }
     } catch (e) {
         functions.logger.log(e)
-        throw new Error(`⚠️ LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の POST /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }
 
@@ -63,13 +64,11 @@ export const postVerifyAPI = async (
  */
 export const getLINEProfile = async (
     accessToken: string
-): Promise<{userId: string, displayName: string, pictureUrl: string | null}> => {
+): Promise<{ userId: string; displayName: string; pictureUrl: string | null }> => {
     try {
-        const response = await axios.get<LINEGetProfileResponse>(
-            `https://api.line.me/v2/profile`, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            }
-        )
+        const response = await axios.get<LINEGetProfileResponse>(`https://api.line.me/v2/profile`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        })
         if (response.status !== 200) {
             throw new Error(`[${response.status}]: GET /v2/profile`)
         }
@@ -79,19 +78,22 @@ export const getLINEProfile = async (
             pictureUrl: response.data.pictureUrl ?? null
         }
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /v2/profile で失敗しました。${e}`)
+        throw new Error(`LINE の GET /v2/profile で失敗しました。${e}`)
     }
 }
-
 
 /**
  *
  * @param {string} email - メールアドレス
  * @returns
  */
-export const getOrCreateFirebaseAuthUser = async (
-    { uid, email }:{ uid: string, email: string}
-): Promise<admin.auth.UserRecord> => {
+export const getOrCreateFirebaseAuthUser = async ({
+    uid,
+    email
+}: {
+    uid: string
+    email: string
+}): Promise<admin.auth.UserRecord> => {
     try {
         const userRecord = await admin.auth().getUserByEmail(email)
         functions.logger.log(
@@ -125,6 +127,6 @@ export const createCustomToken = async (userId: string): Promise<string> => {
         const customToken = await admin.auth().createCustomToken(userId)
         return customToken
     } catch (e) {
-        throw new Error(`⚠️ LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
+        throw new Error(`LINE の GET /oauth2/v2.1/verify で失敗しました。${e}`)
     }
 }

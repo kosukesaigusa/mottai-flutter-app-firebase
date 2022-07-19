@@ -1,19 +1,20 @@
-import { FieldValue } from "@google-cloud/firestore"
+import { DocumentData, FieldValue, FirestoreDataConverter, QueryDocumentSnapshot } from '@google-cloud/firestore'
+import { AttendingRoom } from '../models/attendingRoom'
 
-export const attendingRoomConverter = {
-    fromFirestore(qds: FirebaseFirestore.QueryDocumentSnapshot): AttendingRoom {
+export const attendingRoomConverter: FirestoreDataConverter<AttendingRoom> = {
+    fromFirestore(qds: QueryDocumentSnapshot): AttendingRoom {
         const data = qds.data()
         return {
             roomId: qds.id,
-            partnerId: data.partnerId,
-            updatedAt: data.updatedAt ?? null,
+            partnerId: data.partnerId ?? ``,
+            updatedAt: data.updatedAt,
             unreadCount: data.unreadCount ?? 0,
             muteNotification: data.muteNotification ?? false,
             isBlocked: data.isBlocked ?? false,
-            lastReadMessageId: data.lastReadMessageId ?? null
+            lastReadMessageId: data.lastReadMessageId ?? ``
         }
     },
-    toFirestore(attendingRoom: AttendingRoom): FirebaseFirestore.DocumentData {
+    toFirestore(attendingRoom: AttendingRoom): DocumentData {
         return {
             roomId: attendingRoom.roomId,
             partnerId: attendingRoom.partnerId,
@@ -21,7 +22,7 @@ export const attendingRoomConverter = {
             unreadCount: attendingRoom.unreadCount ?? 0,
             muteNotification: attendingRoom.muteNotification ?? false,
             isBlocked: attendingRoom.isBlocked ?? false,
-            lastReadMessageId: attendingRoom.lastReadMessageId ?? null
+            lastReadMessageId: attendingRoom.lastReadMessageId ?? ``
         }
     }
 }

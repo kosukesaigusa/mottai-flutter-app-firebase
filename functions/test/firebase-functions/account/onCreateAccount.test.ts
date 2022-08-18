@@ -4,7 +4,7 @@ import { QueryDocumentSnapshot } from '@google-cloud/firestore'
 import { onCreateAccount } from '~/src/firebase-functions/account/onCreateAccount'
 import { AppAccount } from '~/src/models/account'
 import { PublicUserRepository } from '~/src/repositories/publicUser'
-import { testEnv } from '../../setup'
+import { testEnv } from '../../setUp'
 
 // testEnv.mockConfig({ someApi: { key: `abc123` } })
 
